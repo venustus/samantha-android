@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Babble!</string>
+    <string name="hello_world">Log in with your Twitter or Facebook account!</string>
+    <string name="action_settings">Settings</string>
+</resources>
