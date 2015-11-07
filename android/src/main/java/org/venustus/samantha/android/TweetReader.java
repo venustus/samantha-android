@@ -1,14 +1,17 @@
 package org.venustus.samantha.android;
 
+import android.content.Context;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.widget.LinearLayout;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.MentionEntity;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.models.UrlEntity;
+import com.twitter.sdk.android.tweetui.TweetView;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -24,10 +27,15 @@ public class TweetReader extends Callback<List<Tweet>> {
     private List<Tweet> allTweets = new ArrayList<>();
     private Tweet lastTweetRead;
     private static final String TAG = "TweetReader";
+    private LinearLayout layout;
+    private Context context;
 
-    public TweetReader(TextToSpeech ttsObj, SpeechRecognizer speechRecognizer) {
+    public TweetReader(TextToSpeech ttsObj, SpeechRecognizer speechRecognizer,
+                       LinearLayout layout, Context context) {
         this.ttsObj = ttsObj;
         this.speechRecognizer = speechRecognizer;
+        this.layout = layout;
+        this.context = context;
     }
 
     public String getLastTweetRead() {
@@ -52,7 +60,9 @@ public class TweetReader extends Callback<List<Tweet>> {
         if(allTweets.size() == 0) return;
         final Tweet nextTweet = allTweets.get(0);
         allTweets.remove(0);
-        Log.d(TAG, "Retrieved tweet " + nextTweet.text + " posted by " + nextTweet.user.name)   ;
+        Log.d(TAG, "Retrieved tweet " + nextTweet.text + " posted by " + nextTweet.user.name);
+        layout.removeViewAt(layout.getChildCount() - 1);
+        layout.addView(new TweetView(context, nextTweet));
         String tweetText = nextTweet.text;
         if(nextTweet.entities.userMentions.size() > 0) {
             for(MentionEntity me: nextTweet.entities.userMentions) {

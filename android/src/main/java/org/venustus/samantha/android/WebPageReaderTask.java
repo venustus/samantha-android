@@ -56,6 +56,7 @@ public class WebPageReaderTask extends AsyncTask<String, Integer, Void> {
 
         } catch (Exception e) {
             Log.e(TAG, "Error converting result " + e.toString());
+            ttsObj.speak("Sorry, I could not read this web page", TextToSpeech.QUEUE_ADD, null, "speakable-last");
         }
         return null;
     }

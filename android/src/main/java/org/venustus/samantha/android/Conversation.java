@@ -16,17 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.*;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
-import com.twitter.sdk.android.core.models.MentionEntity;
-import com.twitter.sdk.android.core.models.Tweet;
-import com.twitter.sdk.android.core.models.UrlEntity;
 import com.twitter.sdk.android.core.services.StatusesService;
 import io.fabric.sdk.android.Fabric;
 
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -123,7 +119,7 @@ public class Conversation extends ActionBarActivity {
             }, "com.ivona.tts");
             speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getActivity());
 
-            tweetReader = new TweetReader(ttsObj, speechRecognizer);
+            tweetReader = new TweetReader(ttsObj, speechRecognizer, (LinearLayout) rootView.findViewById(R.id.mainLayout), getActivity());
 
             if(ts == null) {
                 readTweetsButton.setVisibility(View.INVISIBLE);
@@ -170,7 +166,11 @@ public class Conversation extends ActionBarActivity {
                         });
                     }
                     else if(utteranceId.equals("speakable-last")) {
-                        tweetReader.readNextTweet();
+                        rootView.post(new Runnable() {
+                            public void run() {
+                                tweetReader.readNextTweet();
+                            }
+                        });
                     }
                 }
 
